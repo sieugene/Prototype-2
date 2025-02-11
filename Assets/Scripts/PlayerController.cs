@@ -5,30 +5,43 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float speed = 5.0f;
-    public float horizontalInput;
-    public float minX;
-    public float maxX;
-    // Start is called before the first frame update
+    private float horizontalInput;
+    private float minX;
+    private float maxX;
+
     void Start()
     {
-        // camera view area
+        // Calculate the screen boundaries given the camera position and aspect ratio
         float halfWidth = Camera.main.orthographicSize * Camera.main.aspect;
-        minX = (Camera.main.transform.position.x - halfWidth) + 1f;
-        maxX = (Camera.main.transform.position.x + halfWidth) - 1f;
+        minX = Camera.main.transform.position.x - halfWidth + 0.7f;
+        maxX = Camera.main.transform.position.x + halfWidth - 0.7f;
     }
 
-    // Update is called once per frame
     void Update()
     {
         horizontalInput = Input.GetAxis("Horizontal");
-        bool allowMoveRight = transform.position.x <= maxX && horizontalInput > 0;
-        bool allowMoveLeft = transform.position.x >= minX && horizontalInput < 0;
+        transform.Translate(Vector3.right * Time.deltaTime * horizontalInput * speed);
+        WrapAround();
+    }
 
-        if (allowMoveRight || allowMoveLeft)
+
+
+    /// <summary>
+    /// Checks if the player is out of bounds and moves them to the other side of the screen
+    /// </summary>
+    private void WrapAround()
+    {
+        Vector3 position = transform.position;
+
+        if (position.x > maxX)
         {
-            transform.Translate(transform.right * Time.deltaTime * horizontalInput * speed);
+            position.x = minX;
+        }
+        else if (position.x < minX)
+        {
+            position.x = maxX;
         }
 
-
+        transform.position = position;
     }
 }

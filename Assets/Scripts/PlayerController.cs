@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     private float horizontalInput;
     private float minX;
     private float maxX;
+    public GameObject projectilePrefab;
 
     void Start()
     {
@@ -22,6 +23,11 @@ public class PlayerController : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal");
         transform.Translate(Vector3.right * Time.deltaTime * horizontalInput * speed);
         WrapAround();
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Instantiate(projectilePrefab, transform.position, projectilePrefab.transform.rotation);
+        }
     }
 
 
